@@ -9,6 +9,17 @@ class MoviesController < ApplicationController
 
   def index
     @all_ratings = ['G','R','PG','PG-13']
+    sort_order = case params[:sort]
+    when "title"
+      :title
+    when "rating"
+      :rating
+    when "release_date"
+      :release_date
+    else
+      nil # default to no specific order if no sort parameter is provided
+    end
+
     if params[:ratings] == nil
       @movies = Movie.all
       @ratings_to_show = []
@@ -16,6 +27,8 @@ class MoviesController < ApplicationController
       @movies = Movie.with_ratings(params[:ratings].keys)
       @ratings_to_show = params[:ratings].keys
     end
+
+    @movies = @movies.order(sort_order) if sort_order
   end
 
   def new
