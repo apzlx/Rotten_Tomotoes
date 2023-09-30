@@ -3,23 +3,17 @@ class MoviesController < ApplicationController
   def show
     id = params[:id] # retrieve movie ID from URI route
     @movie = Movie.find(id) # look up movie by unique ID
-    
+    @back_link_params = { sort: session[:sort], ratings: session[:ratings] }
     # will render app/views/movies/show.<extension> by default
   end
 
   def index
     @all_ratings = ['G','R','PG','PG-13']
-    sort_order = case params[:sort]
-    when "title"
-      :title
-    when "rating"
-      :rating
-    when "release_date"
-      :release_date
-    else
-      nil # default to no specific order if no sort parameter is provided
-    end
+    allowed_sorts = ["title", "release_date"]
 
+    sort = params[:sort] || session[:sort]
+    ratings = params[:ratings] || session[:ratings]
+    
     if params[:ratings] == nil
       @movies = Movie.all
       @ratings_to_show = []
@@ -28,7 +22,12 @@ class MoviesController < ApplicationController
       @ratings_to_show = params[:ratings].keys
     end
 
-    @movies = @movies.order(sort_order) if sort_order
+    if allowed_sorts.include?(sort)
+      @movies = @movies.order(sort)
+    end
+
+    session[:sort] = sort
+    session[:ratings] = ratings
   end
 
   def new
