@@ -23,7 +23,6 @@
       <th class="<%= 'hilite text-primary' if params[:sort] == 'release_date' %>">
         <%= link_to "Release Date", movies_path(sort: "release_date", ratings: params[:ratings]), id: "release_date_header" %>
       </th>
-      
       <th>More Info</th>
     </tr>
   </thead>
@@ -41,7 +40,7 @@
           <%= movie.release_date %>
         </td>
         <td>
-          <%= link_to "More about #{movie.title}", movie_path(movie) %>
+          <%= link_to "More about #{movie.title}", movie_path(movie, sort: params[:sort], ratings: params[:ratings]) %>
         </td>
       </tr>
     <% end %>
