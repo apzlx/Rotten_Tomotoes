@@ -13,10 +13,11 @@ class MoviesController < ApplicationController
     @ratings_to_show = Movie.all_ratings
 
     sort = params[:sort]
-    ratings = @all_ratings
+    ratings = Movie.all_ratings
     if params[:ratings] == nil and params[:sort] == nil
       redirect_to movies_path({ratings: ratings.map{ |r| [r, 1] }.to_h})
     end
+
     if params[:ratings] == nil
       @ratings_to_show = []
     else
