@@ -7,20 +7,24 @@ class MoviesController < ApplicationController
   end
 
   def index
-    @all_ratings = ['G','R','PG','PG-13']
+    
     allowed_sorts = ["title", "release_date"]
+    @all_ratings = Movie.all_ratings
+    @ratings_to_show = Movie.all_ratings
 
     sort = params[:sort]
-    ratings = params[:ratings]
-    
+    ratings = @all_ratings
+    if params[:ratings] == nil and params[:sort] == nil
+      redirect_to movies_path({ratings: ratings.map{ |r| [r, 1] }.to_h})
+    end
     if params[:ratings] == nil
-      @movies = Movie.all
-      @ratings_to_show = @all_ratings
+      @ratings_to_show = []
     else
-      @movies = Movie.with_ratings(params[:ratings].keys)
       @ratings_to_show = params[:ratings].keys
     end
 
+    @movies = Movie.with_ratings(@ratings_to_show)
+    
     if allowed_sorts.include?(sort)
       @movies = @movies.order(sort)
     end
